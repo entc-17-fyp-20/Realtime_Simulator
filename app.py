@@ -47,12 +47,12 @@ for X_test_i, y_test_i in zip(X_test, y_test):
     X_test1 = X_test1.reshape(1, 144, 4, 1)
 
     y_hat1 = model.predict(X_test1)
-    insert_db(db, str(y_hat1[0][0]), str(y_test_i), str(float(y_hat1[0][0])-float(y_test_i)))
+    insert_db(db, str(y_hat1[0][0]), str(y_test_i), str((float(y_hat1[0][0])-float(y_test_i))))
     print(y_hat1[0][0], y_test_i, float(y_hat1[0][0])-float(y_test_i))
 
     time.sleep(10)
     i += 1
-    if i > 5:
+    if i > 30:
         break
 
 
