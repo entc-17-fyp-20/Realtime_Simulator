@@ -23,7 +23,26 @@ class Power(Resource):
                 row['actual'] = i[3]
                 row['difference'] = i[4]
                 last_30.append(row)
-            return last_30
+            return last_30[::-1]
+        except Exception as e:
+            print(e)
+            return {'result': 'error'}
+
+@api.route('/power_last')
+class PowerLast(Resource):
+    def get(self):
+        try:
+            data = power_last()
+            last_one = []
+            for i in data:
+                row = {}
+                row['id'] = i[0]
+                row['time'] = i[1].isoformat()
+                row['predicted'] = i[2]
+                row['actual'] = i[3]
+                row['difference'] = i[4]
+                last_one.append(row)
+            return last_one
         except Exception as e:
             print(e)
             return {'result': 'error'}
@@ -43,7 +62,26 @@ class Condition(Resource):
                 row['actual'] = i[3]
                 row['difference'] = i[4]
                 last_30.append(row)
-            return last_30
+            return last_30[::-1]
+        except Exception as e:
+            print(e)
+            return {'result': 'error'}
+
+@api.route('/condition_last')
+class ConditionLast(Resource):
+    def get(self):
+        try:
+            data = condition_last()
+            last_one = []
+            for i in data:
+                row = {}
+                row['id'] = i[0]
+                row['time'] = i[1].isoformat()
+                row['predicted'] = i[2]
+                row['actual'] = i[3]
+                row['difference'] = i[4]
+                last_one.append(row)
+            return last_one
         except Exception as e:
             print(e)
             return {'result': 'error'}
