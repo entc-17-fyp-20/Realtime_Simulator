@@ -18,7 +18,8 @@ class Power(Resource):
             for i in data:
                 row = {}
                 row['id'] = i[0]
-                row['time'] = i[1].isoformat()
+                time_list = i[1].isoformat().split("T")
+                row['time'] = time_list[0] + " " + time_list[1]
                 row['predicted'] = i[2]
                 row['actual'] = i[3]
                 row['difference'] = i[4]
@@ -28,21 +29,52 @@ class Power(Resource):
             print(e)
             return {'result': 'error'}
 
+
 @api.route('/power_last')
 class PowerLast(Resource):
     def get(self):
         try:
             data = power_last()
             last_one = []
+            row = {}
             for i in data:
-                row = {}
                 row['id'] = i[0]
-                row['time'] = i[1].isoformat()
+                time_list = i[1].isoformat().split("T")
+                row['time'] = time_list[0] + " " + time_list[1]
                 row['predicted'] = i[2]
                 row['actual'] = i[3]
                 row['difference'] = i[4]
-                last_one.append(row)
+
+            data1 = power_last_30()
+            avg_error = 0
+            for i in data1:
+                avg_error += abs(i[2] - i[3]) / i[3]
+            avg_error = (100 * avg_error) / 30
+            row['avg'] = avg_error
+            last_one.append(row)
             return last_one
+        except Exception as e:
+            print(e)
+            return {'result': 'error'}
+
+
+@api.route('/power_last_2')
+class PowerLast2(Resource):
+    def get(self):
+        try:
+            data = power_last_2()
+            last_two = []
+            for i in data:
+                row = {}
+                row['id'] = i[0]
+                time_list = i[1].isoformat().split("T")
+                row['time'] = time_list[0] + " " + time_list[1]
+                row['predicted'] = i[2]
+                row['actual'] = i[3]
+                row['difference'] = i[4]
+                last_two.append(row)
+            last_two.pop(0)
+            return last_two
         except Exception as e:
             print(e)
             return {'result': 'error'}
@@ -57,7 +89,8 @@ class Condition(Resource):
             for i in data:
                 row = {}
                 row['id'] = i[0]
-                row['time'] = i[1].isoformat()
+                time_list = i[1].isoformat().split("T")
+                row['time'] = time_list[0] + " " + time_list[1]
                 row['predicted'] = i[2]
                 row['actual'] = i[3]
                 row['difference'] = i[4]
@@ -67,21 +100,58 @@ class Condition(Resource):
             print(e)
             return {'result': 'error'}
 
+
 @api.route('/condition_last')
 class ConditionLast(Resource):
     def get(self):
         try:
             data = condition_last()
             last_one = []
+            row = {}
             for i in data:
-                row = {}
                 row['id'] = i[0]
-                row['time'] = i[1].isoformat()
+                time_list = i[1].isoformat().split("T")
+                row['time'] = time_list[0] + " " + time_list[1]
                 row['predicted'] = i[2]
                 row['actual'] = i[3]
                 row['difference'] = i[4]
-                last_one.append(row)
+                if abs(int(i[4])) > 8:
+                    status = "Unhealthy"
+                else:
+                    status = "Healthy"
+                row['status'] = status
+
+            data1 = condition_last_30()
+            avg_error = 0
+            for i in data1:
+                avg_error += abs(i[2]-i[3])/i[3]
+
+            avg_error = (100*avg_error)/30
+            row['avg'] = avg_error
+            last_one.append(row)
             return last_one
+        except Exception as e:
+            print(e)
+            return {'result': 'error'}
+
+
+@api.route('/condition_last_2')
+class ConditionLast2(Resource):
+    def get(self):
+        try:
+            data = condition_last_2()
+            last_two = []
+            for i in data:
+                row = {}
+                row['id'] = i[0]
+                time_list = i[1].isoformat().split("T")
+                row['time'] = time_list[0] + " " + time_list[1]
+                row['predicted'] = i[2]
+                row['actual'] = i[3]
+                row['difference'] = i[4]
+                last_two.append(row)
+            last_two.pop(0)
+            return last_two
         except Exception as e:
             print(e)
             return {'result': 'error'}
